@@ -16,7 +16,7 @@ function UploadFilesSection() {
     </Box>
   ));
   
-  const BASE_URL = "http://54.89.53.157/";
+  const BASE_URL = "https://54.89.53.157/";
 
   async function maskFiles(){
     console.log(uploadedFiles)
