@@ -7,7 +7,7 @@ import UploadFilesSection from "./components/UploadFilesSection";
 import axios from "axios";
 var FormData = require('form-data');
 
-const BASE_URL = "https:/54.89.53.157/";
+const BASE_URL = "https://ec2-204-236-203-182.compute-1.amazonaws.com/";
 
 function App() {
   const [text, setText] = useState('')
