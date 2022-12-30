@@ -2,12 +2,19 @@ import { Box, Button, Typography } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
-var FormData = require('form-data');
+import BasicSelect from "../Select";
+import { IS_DEMO_MODE } from "../../constants";
+var FormData = require("form-data");
 
 function UploadFilesSection() {
-  const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
-    useDropzone({ maxFiles: 20 });
+  const {
+    acceptedFiles,
+    getRootProps,
+    getInputProps,
+    isDragActive
+  } = useDropzone({ maxFiles: 20 });
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [inputFile, setInputFile] = useState("");
   const files = uploadedFiles.map((file) => (
     <Box key={file.path}>
       <Typography variant="body1" key={`${file.path}.name`}>
@@ -15,38 +22,46 @@ function UploadFilesSection() {
       </Typography>
     </Box>
   ));
-  
+
   const BASE_URL = "https://52.29.156.184:5000/";
 
-  async function maskFiles(){
-    console.log(uploadedFiles)
+  async function maskFiles() {
+    if (IS_DEMO_MODE) {
+      const link = document.createElement("a");
+      const fileName = inputFile.split(".txt")[0];
+      link.download = `${fileName}.zip`;
+      link.target = "_blank";
+      link.href = `./${fileName}.zip`;
+      link.click();
+    } else {
+      console.log(uploadedFiles);
 
-    var data = new FormData();
-    // console.log("df",data.getHeaders())
-    for(let file of uploadedFiles){
-      data.append('files',
-      file );
-    }
-    const response = await axios.post(BASE_URL+"mask-files",data,{
-      responseType:"blob",
-      headers: {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      var data = new FormData();
+      // console.log("df",data.getHeaders())
+      for (let file of uploadedFiles) {
+        data.append("files", file);
       }
-    });
+      const response = await axios.post(BASE_URL + "mask-files", data, {
+        responseType: "blob",
+        headers: {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      });
 
-    console.log(response.data);
-    var blob = new Blob([response.data], {
-        type: response.headers['content-type']
-    }); 
-    console.log(blob); 
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'masked.zip'); //or any other extension
-    document.body.appendChild(link);
-    link.click();
+      console.log(response.data);
+      var blob = new Blob([response.data], {
+        type: response.headers["content-type"]
+      });
+      console.log(blob);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "masked.zip"); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+    }
   }
 
   useEffect(() => {
@@ -76,9 +91,13 @@ function UploadFilesSection() {
       )}
       <Box textAlign={"left"} mt={2} display="flex">
         <Box mr={2}>
-          <Button color="secondary" variant="contained" onClick={onClick}>
-            Select Files
-          </Button>
+          {IS_DEMO_MODE ? (
+            <BasicSelect inputFile={inputFile} setInputFile={setInputFile} />
+          ) : (
+            <Button color="secondary" variant="contained" onClick={onClick}>
+              Select Files
+            </Button>
+          )}
         </Box>
         <Button variant="contained" onClick={onResetClickHandler}>
           Reset
