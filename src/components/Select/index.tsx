@@ -6,7 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 const options = ["mask1.txt", "mask2.txt"];
-export default function BasicSelect(props) {
+export default function BasicSelect(props: any) {
   const { inputFile, setInputFile } = props;
   const handleChange = (event: SelectChangeEvent) => {
     const link = document.createElement("a");
