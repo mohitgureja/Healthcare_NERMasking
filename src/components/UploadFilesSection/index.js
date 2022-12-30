@@ -27,12 +27,24 @@ function UploadFilesSection() {
 
   async function maskFiles() {
     if (IS_DEMO_MODE) {
-      const link = document.createElement("a");
       const fileName = inputFile.split(".txt")[0];
-      link.download = `${fileName}.zip`;
-      link.target = "_blank";
-      link.href = `./${fileName}.zip`;
-      link.click();
+      fetch(`${fileName}.zip`).then((response) => {
+        response.blob().then((blob) => {
+          // Creating new object of PDF file
+          const fileURL = window.URL.createObjectURL(blob);
+          // Setting various property values
+          let alink = document.createElement("a");
+          alink.href = fileURL;
+          alink.download = `${fileName}.zip`;
+          alink.click();
+        });
+      });
+      // const link = document.createElement("a");
+      // const fileName = inputFile.split(".txt")[0];
+      // link.download = `${fileName}.zip`;
+      // link.target = "_blank";
+      // link.href = `./${fileName}.zip`;
+      // link.click();
     } else {
       console.log(uploadedFiles);
 
